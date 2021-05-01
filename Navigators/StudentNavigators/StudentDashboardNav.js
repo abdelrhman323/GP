@@ -2,7 +2,7 @@ import React from 'react'
 import {createDrawerNavigator, } from '@react-navigation/drawer'
 import Colors from '../../Constants/colors';
 import StudentCoursesScreen from '../../Screens/StudentScreens/StudentCoursesScreen.js';
-import StudentCalendarScreen from '../../Screens/StudentScreens/StudentCalendarScreen.js';
+import StudentCalendarScreen from '../../Screens/StudentScreens/StudentCalendarScreen.tsx';
 import ProfileAvatar from '../../Components/ProfileAvatar';
 import CustomDrawer from '../../Components/CustomDrawer';
 import { TouchableOpacity } from 'react-native';

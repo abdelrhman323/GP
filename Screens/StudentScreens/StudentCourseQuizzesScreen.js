@@ -4,7 +4,7 @@ import base64 from 'base-64'
 import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel, } from 'react-native-simple-radio-button';
 import { CommonActions} from '@react-navigation/native';
 
-export default class StudentCourseQuizzesScreen extends Component {
+export default class Quiz extends Component {
 
     state = {
         loading: false,
@@ -15,17 +15,21 @@ export default class StudentCourseQuizzesScreen extends Component {
         currentQuestion: '',
         currentQuestionOptions: [],
         totalUserAnswers: [],
+        link:'https://opentdb.com/api.php?amount=10&category=18&difficulty=easy&type=multiple&encode=base64'
     }
-
+    handelQuizLinks(Links){
+        this.state({link:Links})
+    }
     componentDidMount() {
         this.fetchQuizData()
     }
 
     fetchQuizData() {
         const { loading } = this.state
+        const {link} = this.state
         this.setState({ loading: !loading })
         fetch(
-            'https://opentdb.com/api.php?amount=10&category=18&difficulty=easy&type=multiple&encode=base64'
+            this.state.link
         )
             .then(response => response.json())
             .then(({ results }) => {
@@ -37,6 +41,10 @@ export default class StudentCourseQuizzesScreen extends Component {
                 this.setState({ loading: false });
             })
     }
+    goToResult() {
+        alert('aaaaaaaaaaaaaaaaaaaa')
+        this.props.navigation.navigate('StudentCourseOverviewScreen');
+     }
 
     _renderQuestion() {
         const { quizData, asked } = this.state;
@@ -95,7 +103,7 @@ export default class StudentCourseQuizzesScreen extends Component {
         }
 
         this.setState({ loading: true })
-      alert(`'totalTime':${(parseInt(totalTime) / 60)} sec and'totalScore':${parseInt(totalScore)} out 10`
+      alert(`totalTime:  ${(parseInt(totalTime) / 60)} sec\ntotalScore:  ${parseInt(totalScore)} out 10`
       )
       this.setState({ showQuiz: false,loading: false,asked: 0 });
       totalScore = 0;
@@ -160,11 +168,14 @@ export default class StudentCourseQuizzesScreen extends Component {
                                                 color="#28a745"
                                             />
                                         ) : (
+                                            <View>
                                                 <Button
                                                     onPress={() => this.nextQuestion()}
                                                     title="Next"
                                                     color="#007bff"
                                                 />
+   
+                                            </View>
                                             )
                                         }
                                     </View>

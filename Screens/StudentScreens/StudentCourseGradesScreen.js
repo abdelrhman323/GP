@@ -1,65 +1,17 @@
 import React from 'react'
 import { StyleSheet, View} from 'react-native';
-import { TextInput, } from 'react-native-gesture-handler';
-import DropdownMenus from '../../Components/DropdownMenus';
 import UsersTable from '../../Components/UsersTable';
 
 export default class AdminManageStudentsAccountsScreen extends React.Component{
   
   state={
-    attributes: [' St_Name', 'Grades'],
-    studentsBasicData: [
-      ['asdfg', 'Excellent'],
-      ['axdrew', 'Excellent'],
-      ['jygvf', 'Excellent'],
-      ['xcvgtgvfd', 'Excellent'],
-      ['ryhfcnj', 'Excellent'],
-      ['efyvuw', 'Excellent'],
-      ['wbvhekfwku', 'Excellent'],
-      ['ewbrefvwe', 'Excellent'],
-      ['etnebwre', 'Excellent'],
-      ['wrnetbgdv', 'Excellent'],
-      ['asvfghtrtgfd', 'Excellent'],
-      ['ehtrgvfeeg', 'Excellent'],
-      ['ymrtndgbf', 'Excellent'],
-      ['sdvfthgf', 'Excellent'],
-      ['bgfdfgfdrtyj', 'Excellent'],
-      ['sfvreuyjtrd', 'Excellent'],
-      ['rhnrtbdgvfd', 'Excellent'],
-      ['htentbgrdvc', 'Excellent'],
-      ['gtwgefvsad', 'Excellent'],
-      ['vewdasxa', 'Excellent'],
-      ['zsertgvcds', 'Excellent'],
-      ['asdfewvfscx', 'Excellent'],
-      ['jtrhbdgf', 'Excellent'],
-      ['eyrbgsfvdc', 'Excellent'],
-    ],
-
+    attributes: ['Quiz', 'Grades'],
     studentsShownData: [
-      ['asdfg', 'Excellent'],
-      ['axdrew', 'Excellent'],
-      ['jygvf', 'Excellent'],
-      ['xcvgtgvfd', 'Excellent'],
-      ['ryhfcnj', 'Excelent'],
-      ['efyvuw', 'Excellent'],
-      ['wbvhekfwku', 'Excellent'],
-      ['ewbrefvwe', 'Excellent'],
-      ['etnebwre', 'Excellent'],
-      ['wrnetbgdv', 'Excellent'],
-      ['asvfghtrtgfd', 'Excellent'],
-      ['ehtrgvfeeg', 'Excellent'],
-      ['ymrtndgbf', 'Excellent'],
-      ['sdvfthgf', 'Excellent'],
-      ['bgfdfgfdrtyj', 'Excellent'],
-      ['sfvreuyjtrd', 'Excellent'],
-      ['rhnrtbdgvfd', 'Excellent'],
-      ['htentbgrdvc', 'Excellent'],
-      ['gtwgefvsad', 'Excellent'],
-      ['vewdasxa', 'Excellent'],
-      ['zsertgvcds', 'Excellent'],
-      ['asdfewvfscx', 'Excellent'],
-      ['jtrhbdgf', 'Excellent'],
-      ['eyrbgsfvdc', 'Excellent'],
+      ['Quiz1', '      8'],
+      ['Quiz2', '      9'],
+      ['Quiz3', '      8'],
+      ['Quiz4', '      6'],
+      ['Quiz5', '      10'],
     ],
   }
 
@@ -82,23 +34,13 @@ export default class AdminManageStudentsAccountsScreen extends React.Component{
   render(){
 
     return(
-      <View style={styles.container}>
-        <View style={styles.fixedView}>
-          <TextInput 
-            placeholder={'Search'}
-            onChangeText={this.handleSearch}
-            style={styles.searchBox}
-          />
-          <DropdownMenus />
-        </View>
-        
+    <View>    
         <UsersTable 
           userType={'Student'}
           attributes={this.state.attributes} 
           usersShownData={this.state.studentsShownData} 
-          //navigation={this.props.navigation} 
         />
-      </View>
+    </View>    
     );
   }
 }
