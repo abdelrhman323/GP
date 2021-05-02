@@ -8,6 +8,8 @@ import InstructorCourseGradesScreen from '../../Screens/InstructorScreens/Instru
 import InstructorCourseAssignmentsScreen from '../../Screens/InstructorScreens/InstructorCourseAssignmentsScreen'
 import Colors from '../../Constants/colors';
 
+
+
 const InstructorCourseNavigator = createBottomTabNavigator();
 
 export default class InstructorCourseNav extends React.Component{
