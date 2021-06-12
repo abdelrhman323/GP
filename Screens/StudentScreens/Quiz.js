@@ -47,7 +47,6 @@ export default class Quiz extends Component {
             total_marks:data.total_marks
           });
       }) .catch(error => {
-                alert(`ERROR:${error.message}`);
                 this.setState({ loading: false });
             })
     }
@@ -85,9 +84,8 @@ export default class Quiz extends Component {
             question: currentQuestion.question,
            // correct_answer: currentQuestion.alternatives.filter((obj)=>obj.isCorrect===true)[0].text,
             userAnswer: currentQuestionOptions[userAnswer].label,
-            score: currentQuestion.choices.filter((obj)=>obj.answer) === currentQuestionOptions[userAnswer].label,
+            score: currentQuestion.answer === currentQuestionOptions[userAnswer].label,
         }
-
         totalUserAnswers.push(currentAnswer)
         if(last) this.setState({notstart:true})   
         this.setState({
@@ -107,7 +105,7 @@ export default class Quiz extends Component {
             question: currentQuestion.question,
            // correct_answer: currentQuestion.alternatives.filter((obj)=>obj.isCorrect===true)[0].text,
             userAnswer: currentQuestionOptions[userAnswer].label,
-            score: currentQuestion.choices.filter((obj)=>obj.answer) === currentQuestionOptions[userAnswer].label,
+            score: currentQuestion.answer === currentQuestionOptions[userAnswer].label,
         }
 
         totalUserAnswers.pop()
@@ -123,6 +121,7 @@ export default class Quiz extends Component {
         const { navigate } = this.props.navigation;
         const { totalUserAnswers } = this.state
         let totalScore = 0;
+        console.log("AAAAA"+totalUserAnswers)
         for (let i = 0; i < totalUserAnswers.length; i++) {
             if (totalUserAnswers[i].score) {
                 totalScore += 10
@@ -146,11 +145,11 @@ export default class Quiz extends Component {
                     {
                         !showQuiz ? (
                             <View style={styles.container}>
-                                <Text style={styles.text}>Image Processing Quiz</Text>
-                                <Text style={styles.warningText}>Please click to start the quiz.</Text>
+                                <Text style={styles.text}>Course Quiz</Text>
+                                <Text style={styles.warningText}>Please click start quiz after entering the title.</Text>
                                 <TextInput
                                     placeholder='Enter title of Quiz'
-                                    style={{height: 50, width: 200, fontSize: 15,backgroundColor:'white',paddingLeft:10,borderRadius:10}}
+                                    style={{height: 50, width: 200, fontSize: 15,backgroundColor:'white',paddingLeft:10,borderRadius:10,marginLeft:50}}
                                     onChangeText={(title) => this.setState({title})}
                                     value={this.state.title}
                                     />
@@ -247,13 +246,15 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     text: {
-        fontSize: 30,
-        color: '#343a40',
+        fontSize: 40,
+        color: 'blue',
     },
     warningText: {
         fontSize: 15,
         color: '#ffc107',
         marginBottom: 10,
+        marginTop:10,
+        marginLeft:10
     },
     errorText: {
         fontSize: 20,
@@ -275,7 +276,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     fab: {
-        backgroundColor: '#219653',
+        backgroundColor: 'blue',
         position: 'relative',
         margin: 20,
 

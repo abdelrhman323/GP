@@ -23,8 +23,9 @@ export default class Result extends Component {
         return (
             <View style={styles.container}>
                 <Text style={styles.title}>Image Processing Quiz Result</Text>
-                <Text style={styles.text}>Correct answer {totalScore / parseInt(total_marks)} out {total_marks} </Text>
-                <Text style={styles.text}>Total time {time} min</Text>
+                <Text style={styles.text}>Correct answer {totalScore/10} out {total_marks} </Text>
+                <Text style={styles.text}>Total time {time/100} min 
+                </Text>
                 <Button
                     onPress={() => navigate('StudentCourseQuizzesScreen')}
                     title='Go Back'
