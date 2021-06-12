@@ -1,86 +1,97 @@
-import React, {Component} from 'react';
-import {ScrollView, View, Image} from 'react-native';
-import {Calendar,Agenda} from 'react-native-calendars';
-import styles from './style';
-import EventComponent from './EventComponent';
-import { Text, FAB, List } from 'react-native-paper'
+import React, {useState} from 'react';
+import {View, TouchableOpacity,Text} from 'react-native';
+import {Agenda} from 'react-native-calendars';
+import {FAB, List } from 'react-native-paper'
+import {Card} from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux'
 import { addevent, deleteevent } from '../../reducer/EventsApp'
-import { FlatList } from 'react-native-gesture-handler';
-
-
+import moment from 'moment';
+import { NavigationStackConfig } from 'react-navigation-stack';
+import { State } from 'react-native-gesture-handler';
 
 
 function ViewEvent({ navigation }) {
-
- 
+let arr;
+  const timeToString = (time) => {
+    const date = new Date(time);
+      return date.toISOString().split('T')[0];
+    };
     
-    const Events = useSelector(state => state)
-    const dispatch = useDispatch()
-
-    const addEvent = Event => {
-        console.log(Event)
-        dispatch(addevent(Event))
-    }
+  const Events = useSelector(state => state)
+  const dispatch = useDispatch()  
+    const addEvent = (Event) => {
+    console.log(Event)
+    dispatch(addevent(Event))
+}
+  const [items, setItems] = useState({});
+  const QuizGet=()=>{
+		var url = 'http://192.168.1.9:3004/events';
+		axios.get(url)
+		.then((myData) => {
+		  console.log(myData.data);
+		  this.setState({
+			items: myData.data,
+		  }) 
+		})
+	  };
+  const loadItems = (day) => {
     
-    const deleteEvent = id =>dispatch(deleteevent(id))
-    
-        return (
-            <ScrollView style={[styles.greyBg, styles.commonPadding]}>
-                <View style={styles.calendarScreen}>
-                    <View>
-                        <Text style={styles.calendarTitle}>Calender</Text>
-                       
-                        <Agenda
-                            type={'gregorian'}
-                            hideDayNames={false}
-                                
-                            renderArrow={(direction) => {
-                                if (direction === 'left') {
-                                    return <Image source={require('../../assets/left.png')}/>;
-                                }
+    setTimeout(() => {
+      for (let i = -15; i < 85; i++) {
+        const time = day.timestamp + i * 24 * 60 * 60 * 1000;
+        const strTime = timeToString(time);
+        if (!items[strTime]) {
+          items[strTime] = [];
+            items[strTime].push({
+              name:'No Item'+'\n'+ strTime,
+              height: Math.max(50, Math.floor(Math.random() * 150)),
+            });
+        }
+      }
+      const newItems ={};
+      Object.keys(items).forEach((key) => {
+        newItems[key] = items[key];
+      });
+      setItems(items);
+    }, 1000);
+  };
 
-                                return <Image source={require('../../assets/right.png')}/>;
-                            }}
-                        />
-                    </View>
-                </View>
-                
-             <View style={styles.eventList}>
-                <View style={styles.container}>
-                {Events.length === 0 ? (
-                    <View style={styles.titleContainer}>
-                        <Text style={styles.title}>You do not have any Events</Text>
-                    </View>
-                ) : (
-                        <FlatList
-                            data={Events}
-                            renderItem={({ item }) => (
-                                <List.Item
-                                    title={item.Event.EventTitle}
-                                    description={item.Event.EventDescription+'\n'+
-                                        item.Event.EventDate}
-                                    descriptionNumberOfLines={2}
-                                    titleStyle={styles.listTitle}
-                                    onPress = {()=> deleteEvent(item.id)}
-                                />
-                            )}
-                            keyExtractor={item => item.id.toString()}
-                        />
-                    )}
+  const renderItem = (item) => {
+    return (
+      <TouchableOpacity style={{marginRight: 10, marginTop: 17}}>
+        <Card>
+          <Card.Content>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}>
+              <Text>{item.name}</Text>
+            </View>
+          </Card.Content>
+        </Card>
+      </TouchableOpacity>
 
-                <FAB
-                    style={styles.fab}
+);
+  };
+
+  return (
+    <View style={{flex: 1}}>
+      <Agenda
+        items={items}
+        loadItemsForMonth={loadItems}
+        renderItem={renderItem}
+      />
+              <FAB
                     small
                     icon='plus'
                     label='Add a new Event'
                     onPress={() => navigation.navigate('AddEvent',{addEvent})
                     }
                 />
-                </View>
-                </View>
-            </ScrollView>
-        );
-    
-}
-export default ViewEvent
+    </View>
+  );
+};
+
+export default ViewEvent;

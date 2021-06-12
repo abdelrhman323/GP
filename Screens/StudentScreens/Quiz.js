@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Button, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, Button, ActivityIndicator ,TextInput} from 'react-native';
 import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel, } from 'react-native-simple-radio-button';
-import base64 from 'base-64';
+import axios from 'axios';
 import {FAB} from 'react-native-paper'
+import { Alert } from 'react-native';
 
 export default class Quiz extends Component {
 
@@ -15,7 +16,10 @@ export default class Quiz extends Component {
         currentQuestion: '',
         currentQuestionOptions: [],
         totalUserAnswers: [],
-        notstart:false
+        totalTime:'',
+        total_marks:'',
+        notstart:'',
+        title:''
     }
 
     componentDidMount() {
@@ -24,16 +28,25 @@ export default class Quiz extends Component {
 
     fetchQuizData() {
         const { loading } = this.state
+        const token='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGMyNmExNTY3NDJmZjNmYjg2N2FjYjgiLCJuYW1lIjoiYWJkZWxyaG1hbiIsImVtYWlsIjoiaTJAZ21haWwuY29tIiwicm9sZSI6InN0dWRlbnQiLCJpYXQiOjE2MjM0NjUyNjZ9.PYCP_IFM0-lPk_mgG3q0mxYDeHAYEqk89GbsLf-dmUc'
         this.setState({ loading: !loading })
-        fetch(
-            'https://opentdb.com/api.php?amount=10&category=18&difficulty=easy&type=multiple&encode=base64'
-        )
-            .then(response => response.json())
-            .then(({ results }) => {
-                this.setState({ loading: false, quizData: results })
-                // console.log("New Result =>> ", results)
-            })
-            .catch(error => {
+        console.log(this.state.title)
+        fetch(`http://192.168.1.6:3000/quizes/getQuiz/${this.state.title}/cseii3`,{
+            method:"GET",
+            headers: {
+              "Content-Type" :"application/json",  
+              "Authorization": `Bearer ${token}`,
+            },
+        })
+        .then((res) => res.json())
+        .then((data) => {
+          this.setState({
+            loading:false,  
+            quizData: data.questions,
+            totalTime:data.time,
+            total_marks:data.total_marks
+          });
+      }) .catch(error => {
                 alert(`ERROR:${error.message}`);
                 this.setState({ loading: false });
             })
@@ -44,13 +57,16 @@ export default class Quiz extends Component {
         if (!quizData || quizData.length === 0) {
             this.fetchQuizData()
         } else {
-            const currentQuestion = base64.decode(quizData[asked].question);
-
-            const options = quizData[asked].incorrect_answers
-            options.push(quizData[asked].correct_answer);
-
+            const currentQuestion = quizData[asked].question; 
+            
+            let options = [quizData[asked].choices[0]]
+            for(let i=1;i<quizData[asked].choices.length;i++){
+                options.push(
+                    quizData[asked].choices[i])
+              }
+        
             const currentQuestionOptions = options.map((option, index) => ({
-                label: base64.decode(option),
+                label: option,
                 value: index,
             }))
 
@@ -66,10 +82,10 @@ export default class Quiz extends Component {
         const currentQuestion = quizData[asked]
 
         const currentAnswer = {
-            question: base64.decode(currentQuestion.question),
-            correct_answer: base64.decode(currentQuestion.correct_answer),
+            question: currentQuestion.question,
+           // correct_answer: currentQuestion.alternatives.filter((obj)=>obj.isCorrect===true)[0].text,
             userAnswer: currentQuestionOptions[userAnswer].label,
-            score: base64.decode(currentQuestion.correct_answer) === currentQuestionOptions[userAnswer].label,
+            score: currentQuestion.choices.filter((obj)=>obj.answer) === currentQuestionOptions[userAnswer].label,
         }
 
         totalUserAnswers.push(currentAnswer)
@@ -81,24 +97,42 @@ export default class Quiz extends Component {
         }, () => (!last ? this._renderQuestion() : this.calculateResult()))
 
     }
+    backQuestion(last) {
+        const { userAnswer, asked, quizData, currentQuestionOptions, totalUserAnswers } = this.state
+        if(asked===0)return;
+        else{    
+        const currentQuestion = quizData[asked]
 
+        const currentAnswer = {
+            question: currentQuestion.question,
+           // correct_answer: currentQuestion.alternatives.filter((obj)=>obj.isCorrect===true)[0].text,
+            userAnswer: currentQuestionOptions[userAnswer].label,
+            score: currentQuestion.choices.filter((obj)=>obj.answer) === currentQuestionOptions[userAnswer].label,
+        }
+
+        totalUserAnswers.pop()
+        if(last) this.setState({notstart:true})   
+        this.setState({
+            totalUserAnswers: totalUserAnswers,
+            asked: asked - 1,
+            userAnswer: 0,
+        }, () => (!last ? this._renderQuestion() : this.calculateResult()))
+      }
+    }
     calculateResult() {
         const { navigate } = this.props.navigation;
-        const { totalUserAnswers, startTime } = this.state
-        const endTime = new Date().getTime()
-
-        const totalTime = Math.floor(endTime - startTime)
-
+        const { totalUserAnswers } = this.state
         let totalScore = 0;
         for (let i = 0; i < totalUserAnswers.length; i++) {
             if (totalUserAnswers[i].score) {
                 totalScore += 10
             }
         }
-
         this.setState({ loading: true })
-        navigate('Result', { totalScore, totalUserAnswers, totalTime })
-        
+        const time=this.state.totalTime
+        const total_marks=this.state.total_marks
+        navigate('Result', { totalUserAnswers,totalScore,time ,total_marks })
+        //console.log('you finish')
     }
 
     render() {
@@ -114,10 +148,16 @@ export default class Quiz extends Component {
                             <View style={styles.container}>
                                 <Text style={styles.text}>Image Processing Quiz</Text>
                                 <Text style={styles.warningText}>Please click to start the quiz.</Text>
+                                <TextInput
+                                    placeholder='Enter title of Quiz'
+                                    style={{height: 50, width: 200, fontSize: 15,backgroundColor:'white',paddingLeft:10,borderRadius:10}}
+                                    onChangeText={(title) => this.setState({title})}
+                                    value={this.state.title}
+                                    />
                                 <FAB
                                         style={styles.fab}
                                         small
-                                        label='Strt Quiz'
+                                        label='Start Quiz'
                                         icon="check"
                                         disabled={this.state.notstart}
                                         onPress={() => this._renderQuestion()
@@ -156,17 +196,38 @@ export default class Quiz extends Component {
                                     <View style={{ marginTop: 10 }}>
                                         {/* quizData.length === asked + 1 */}
                                         {quizData.length === asked + 1 ? (
+                                            <View>
                                             <Button
                                                 onPress={() => this.nextQuestion('last')}
                                                 title="Finish"
                                                 color="#28a745"
                                             />
+                                            <Text>{'\n'}</Text>
+                                             <Button
+                                                    onPress={() => this.backQuestion()}
+                                                    title="Back"
+                                                    color="red"
+                                                    />
+                                            </View>
+
                                         ) : (
+                                            <View>
+                                                <View>
                                                 <Button
                                                     onPress={() => this.nextQuestion()}
                                                     title="Next"
                                                     color="#007bff"
                                                 />
+                                                </View>
+                                                <Text>{'\n'}</Text>
+                                                <View>
+                                                 <Button
+                                                    onPress={() => this.backQuestion()}
+                                                    title="Back"
+                                                    color="#007bff"
+                                                />
+                                                </View>
+                                             </View>   
                                             )
                                         }
                                     </View>

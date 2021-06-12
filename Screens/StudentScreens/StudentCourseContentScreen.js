@@ -6,51 +6,19 @@ import UsersTable from '../../Components/UsersTable';
 
 
  
-export default class AdminManageStudentsAccountsScreen extends React.Component{
+export default class StudentCourseContentScreen extends React.Component{
   
   state={
     attributes: ['Week', 'Work',],
     studentsShownData: [
       ['Week1', 'Lesson1'],
-      ['Practices:','two Quizes' ],
-      ['Assignments:', 'Assingnment1'],
       ['Week2', 'Lesson2'],
-      ['Practices:','two Quizes' ],
-      ['Assignments:', 'Assingnment2'],
       ['Week3', 'Lesson3'],
-      ['Practices:','two Quizes' ],
-      ['Assignments:', 'Assingnment3'],
       ['Week4', 'Lesson4'],
-      ['Practices:','two Quizes' ],
-      ['Assignments:', 'Assingnment4'],
       ['Week5', 'Lesson5'],
-      ['Practices:','two Quizes' ],
-      ['Assignments:', 'Assingnment5'],
       ['Week6', 'Lesson6'],
-      ['Practices:','two Quizes' ],
-      ['Assignments:', 'Assingnment6'],
       ['Week7', 'Lesson7'],
-      ['Practices:','two Quizes' ],
-      ['Assignments:', 'Assingnment7'],
-      ['Week8', 'Lesson8'],
-      ['Practices:','two Quizes' ],
-      ['Assignments:', 'Assingnment8'],
-      ['Week9', 'Lesson9'],
-      ['Practices:','two Quizes' ],
-      ['Assignments:', 'Assingnment9'],
-      ['Week10', 'Lesson10'],
-      ['Practices:','two Quizes' ],
-      ['Assignments:', 'Assingnment10'],
-      ['Week11', 'Lesson11'],
-      ['Practices::','two Quizes' ],
-      ['Assignments:', 'Assingnment11'],
-      ['Week12', 'Lesson12'],
-      ['Practices:','two Quizes' ],
-      ['Assignments:', 'Assingnment12'],
-      ['Week13', 'Lesson13'],
-      ['Practices:','two Quizes' ],
-      ['Assignments:', 'Assingnment13'],
-    ]
+ ]
 };
 
 

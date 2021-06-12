@@ -20,7 +20,7 @@ export default class App extends React.Component {
         <StatusBar backgroundColor = {Colors.primary_color}/> 
         <NavigationContainer>
           <AppNavigator.Navigator 
-            initialRouteName={'instructorNav'} 
+            initialRouteName={'studentNav'} 
             headerMode={'none'}  
           >
               <AppNavigator.Screen 

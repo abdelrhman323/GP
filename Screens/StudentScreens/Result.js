@@ -12,18 +12,19 @@ export default class Result extends Component {
         console.log("navigation ==>> ", navigation)
         const totalUserAnswers = navigation.getParam('totalUserAnswers', []);
         const totalScore = navigation.getParam('totalScore', 0)
-        const totalTime = navigation.getParam('totalTime', 0)
-        this.setState({ totalUserAnswers, totalScore, totalTime })
+        const time = navigation.getParam('time', 0)
+        const total_marks = navigation.getParam('total_marks', 0)
+        this.setState({ totalUserAnswers,totalScore,time ,total_marks })
     }
 
     render() {
         const { navigate } = this.props.navigation
-        const { totalUserAnswers, totalScore, totalTime } = this.state;
+        const { totalUserAnswers,totalScore,time ,total_marks }= this.state;
         return (
             <View style={styles.container}>
                 <Text style={styles.title}>Image Processing Quiz Result</Text>
-                <Text style={styles.text}>Correct answer {totalScore / 10} out {totalUserAnswers.length} </Text>
-                <Text style={styles.text}>Total time {(totalTime / 60000).toFixed(2)} min</Text>
+                <Text style={styles.text}>Correct answer {totalScore / parseInt(total_marks)} out {total_marks} </Text>
+                <Text style={styles.text}>Total time {time} min</Text>
                 <Button
                     onPress={() => navigate('StudentCourseQuizzesScreen')}
                     title='Go Back'

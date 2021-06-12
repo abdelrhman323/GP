@@ -7,7 +7,7 @@ import storeEvent from '../../reducer/storeEvent'
 export default function App(){
   return (
     <StoreProvider store = {storeEvent}>
-    <PaperProvider >
+    <PaperProvider>
       <AppNavigator/>
     </PaperProvider>
     </StoreProvider>

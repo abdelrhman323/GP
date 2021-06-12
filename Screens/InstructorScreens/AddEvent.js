@@ -1,18 +1,33 @@
 import React, { useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { Text, IconButton, TextInput, FAB } from 'react-native-paper'
+import DatePicker from 'react-native-datepicker'
 
 function AddEvents({ navigation }) {
-    const [EventTitle, setEventTitle] = useState('')
-    const [EventDescription, setEventDescription] = useState('')
-    const [EventDate, setEventDate] = useState('')
+    const [EventTitle, setEventTitle] = useState(' ')
+    const [EventDate, setEventDate] = useState(' ')
+    
 
-    function onSaveEvent() {
-        navigation.state.params.addEvent({ EventTitle, EventDescription,EventDate})
+    function EventPost(){
+		fetch('http://192.168.1.9:3004/events', {
+		  method:"post",
+		  headers:{
+			  'Content-Type':'application/json'
+		  },
+		  body:JSON.stringify({
+              date:EventDate,
+              Events:[EventTitle]
+		  })
+		})
+		.catch(function (error) {
+		  console.log(error);
+		});
         navigation.goBack()
-    }
-
+	  };
+      
+     
     return (
+        
         <>
             <IconButton
                 icon="close"
@@ -30,31 +45,20 @@ function AddEvents({ navigation }) {
                     onChangeText={setEventTitle}
                     style={styles.text}
                 />
-                  <TextInput
-                    placeholder='hh:mm DD-MM-YYYY'
+                 <TextInput
+                    placeholder='yyyy-mm-dd'
                     label="Add Event Date"
                     value={EventDate}
                     mode='outlined'
                     onChangeText={setEventDate}
                     style={styles.text}
                 />
-                <TextInput
-                    label="Add Event Description"
-                    value={EventDescription}
-                    onChangeText={setEventDescription}
-                    mode="flat"
-                    multiline={true}
-                    style={styles.text}
-                    scrollEnabled={true}
-                    returnKeyLabel='done'
-                    blurOnSubmit={true}
-                />
                 <FAB
                     style={styles.fab}
                     small
                     icon="check"
                     disabled={EventTitle == '' ? true : false}
-                    onPress={() => onSaveEvent()}
+                    onPress={() => EventPost()}
                 />
             </View>
         </>
